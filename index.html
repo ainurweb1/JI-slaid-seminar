@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Vibe Coding Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-yellow: #ffea00;
+            --bg-dark: #020617; /* Darker blue instead of pure black */
+            --bg-blue: #1e1b4b;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-dark);
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Font Size Adjustment for large screens (Horizontal view) */
+        .text-xl-lg { font-size: 1.25rem; } /* Default */
+        @media (min-width: 1024px) {
+            .text-xl-lg { font-size: 1.5rem; } /* lg:text-2xl */
+        }
+
+        /* Background Floating Animation - More Blue */
+        .cyber-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 50% 50%, #172554 0%, #020617 70%),
+                repeating-linear-gradient(0deg, transparent 0, transparent 1px, #00f3ff08 1px, #00f3ff08 2px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 1px, #4f46e510 1px, #4f46e510 2px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+            animation: float 15s infinite linear;
+            backdrop-filter: blur(2px);
+        }
+
+        .shape-1 { width: 150px; height: 150px; top: 10%; left: 5%; animation-duration: 25s; border-color: var(--neon-pink); background: rgba(255, 0, 255, 0.05); border-radius: 20px; }
+        .shape-2 { width: 80px; height: 80px; top: 70%; left: 85%; animation-duration: 18s; border-radius: 50%; border-color: var(--neon-cyan); }
+        .shape-3 { width: 200px; height: 2px; top: 30%; left: 40%; animation: scan 6s infinite linear; background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); opacity: 0.7; }
+        .shape-4 { width: 100px; height: 100px; bottom: 10%; left: 20%; border: 1px solid var(--neon-yellow); transform: rotate(45deg); opacity: 0.3; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        @keyframes scan {
+            0% { left: -20%; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { left: 120%; opacity: 0; }
+        }
+
+        /* Cyberpunk Card Styles */
+        .cyber-card {
+            background: rgba(15, 23, 42, 0.7); /* Slate-900 with opacity */
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+            backdrop-filter: blur(8px);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-card:hover {
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+            border-color: var(--neon-pink);
+            transform: translateY(-3px);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 20px;
+            height: 20px;
+            border-top: 2px solid var(--neon-cyan);
+            border-left: 2px solid var(--neon-cyan);
+            transition: all 0.3s;
+        }
+
+        /* Slide Transitions */
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            z-index: 10;
+            position: relative;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Glitch Text Effect (Adjusted width for larger screen) */
+        .glitch {
+            position: relative;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-pink);
+            /* Clipping adjusted for larger text on presentation view */
+            clip: rect(30px, 800px, 100px, 0); 
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-cyan);
+            /* Clipping adjusted for larger text on presentation view */
+            clip: rect(90px, 800px, 150px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 30px, 0); }
+            100% { clip: rect(60px, 9999px, 90px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(60px, 9999px, 90px, 0); }
+            100% { clip: rect(10px, 9999px, 30px, 0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
+
+        .btn-cyber {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-cyber:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+        
+        .neon-text-blue {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cyberpunk Background Elements -->
+    <div class="cyber-bg">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="absolute bottom-8 right-8 z-50 flex gap-4 items-center">
+        <button onclick="prevSlide()" class="btn-cyber p-3 clip-path-polygon" id="prevBtn">
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+        </button>
+        <div class="px-6 py-2 bg-slate-900/80 border border-cyan-500/50 text-cyan-400 font-bold tracking-widest backdrop-blur-md shadow-[0_0_15px_rgba(0,243,255,0.2)]">
+            <span id="slideIndicator">01 / 06</span>
+        </div>
+        <button onclick="nextSlide()" class="btn-cyber p-3 clip-path-polygon" id="nextBtn">
+            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active w-full h-full flex-col justify-center items-center p-12 text-center" id="slide-1">
+        <div class="max-w-7xl w-full z-20 relative">
+            <div class="inline-block px-6 py-2 mb-8 border border-blue-400 text-blue-300 tracking-widest text-lg font-bold bg-blue-900/30 uppercase">
+                Инновациялық білім беру
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight text-white glitch" data-text="ЖАСАНДЫ ИНТЕЛЛЕКТ">
+                ЖАСАНДЫ <span class="text-[#00f3ff]">ИНТЕЛЛЕКТ</span>
+            </h1>
+            <h2 class="text-2xl md:text-4xl text-gray-300 font-light mb-12 uppercase tracking-widest leading-relaxed">
+                Жасанды интеллектті тиімді пайдалану: <br>
+                <span class="text-[#ff00ff] font-bold neon-text-blue">VibeCoding</span> әдісі арқылы интерактивті тапсырмалар әзірлеу
+            </h2>
+        </div>
+    </div>
+
+    <!-- Slide 2: What is Vibe Coding? (Detailed) -->
+    <div class="slide w-full h-full flex-col justify-center items-center p-8 md:p-16" id="slide-2">
+        <div class="max-w-7xl w-full z-20">
+            <h2 class="text-4xl md:text-5xl font-bold text-[#00f3ff] mb-12 flex items-center gap-4">
+                <i data-lucide="code-2" class="w-10 h-10 text-[#ff00ff]"></i>
+                ВАЙБ-КОДИНГ ДЕГЕНІМІЗ НЕ?
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                <div class="space-y-6">
+                    <div class="cyber-card p-8 border-l-4 border-l-pink-500">
+                        <p class="text-xl-lg leading-relaxed text-gray-200">
+                            <span class="text-[#ff00ff] font-bold">Вайб-кодинг</span> (ағылш. vibe coding) — бағдарламалаудағы жаңа тәсіл. Мұнда әзірлеуші кодты қолмен "теріп" жазбайды, оны <span class="text-cyan-400 font-bold">нейрожелілік агенттердің</span> көмегімен генерациялайды.
+                        </p>
+                    </div>
+                    <div class="space-y-4 text-xl-lg">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-900/50 p-2 rounded text-cyan-400"><i data-lucide="user"></i></div>
+                            <p class="text-gray-300">Адам өзінің идеясын және оның жұмыс механикасын қарапайым тілде сипаттайды.</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-900/50 p-2 rounded text-pink-400"><i data-lucide="bot"></i></div>
+                            <p class="text-gray-300">ЖИ осы сипаттама (промт) негізінде дайын кодты генерациялайды.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cyber-card p-10 text-center bg-gradient-to-br from-slate-900 to-blue-900/50">
+                    <i data-lucide="unlock" class="w-16 h-16 text-yellow-400 mx-auto mb-6"></i>
+                    <h3 class="text-3xl text-white font-bold mb-4">БАСТЫ АРТЫҚШЫЛЫҚ</h3>
+                    <p class="text-gray-300 italic text-xl-lg">
+                        "Вайб-кодерге, яғни бізге бағдарламалауды терең білудің қажеті жоқ. Бар болғаны — жасанды интеллект агентіне тапсырманы (сұранысты/промтты) сауатты қоя білу."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: The Art of Prompting (Detailed) -->
+    <div class="slide w-full h-full flex-col justify-center items-center p-8 md:p-16" id="slide-3">
+        <div class="max-w-7xl w-full z-20">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00f3ff] to-[#ff00ff]">
+                Промт — Сауатты сұраныс өнері
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-xl-lg">
+                <div class="cyber-card p-6">
+                    <div class="flex items-center gap-3 mb-4 text-cyan-400">
+                        <i data-lucide="target" class="w-6 h-6"></i>
+                        <h3 class="font-bold text-xl">АНЫҚТАМА</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Промт (Prompt) — нейрожеліге берілетін нұсқаулық. Жауаптың сапасы сұрақтың қаншалықты дұрыс және нақты қойылғанына тікелей байланысты.
+                    </p>
+                </div>
+                <div class="cyber-card p-6">
+                    <div class="flex items-center gap-3 mb-4 text-pink-400">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                        <h3 class="font-bold text-xl">ҚҰРЫЛЫМЫ</h3>
+                    </div>
+                    <ul class="text-gray-400 space-y-2 list-disc list-inside">
+                        <li>Рөл (Кім ретінде?)</li>
+                        <li>Тапсырма (Не істеу?)</li>
+                        <li>Контекст (Кім үшін?)</li>
+                        <li>Формат (Қандай түрде?)</li>
+                    </ul>
+                </div>
+                <div class="cyber-card p-6">
+                    <div class="flex items-center gap-3 mb-4 text-yellow-400">
+                        <i data-lucide="key" class="w-6 h-6"></i>
+                        <h3 class="font-bold text-xl">МАҢЫЗДЫ ЕРЕЖЕ</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                        "Маған ойын жасап бер" — <span class="text-red-400">НАШАР</span>.<br>
+                        "5-сыныпқа тарихтан викторина жаса, дизайны ғарыш стилінде болсын" — <span class="text-green-400">ЖАҚСЫ</span>.
+                    </p>
+                    <div class="pt-3 border-t border-gray-700">
+                        <p class="text-white font-bold">МӘТІНДІК КОНТЕКСТ</p>
+                        <p class="text-red-300 leading-relaxed text-sm">
+                            Жалған ақпараттың алдын алу үшін, тапсырмаға әрқашан оқу материалы (мәтін, параграф, т.б.) бірге ұсынылуы керек.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Google Gemini Tools -->
+    <div class="slide w-full h-full flex-col justify-center items-center p-8 md:p-16" id="slide-4">
+        <div class="max-w-7xl w-full z-20 text-center">
+            <div class="mb-12">
+                <i data-lucide="sparkles" class="w-20 h-20 text-blue-400 mx-auto mb-6 animate-pulse"></i>
+                <h2 class="text-5xl font-bold text-white mb-6">GOOGLE GEMINI & CANVAS</h2>
+                <p class="text-xl-lg text-cyan-200 max-w-4xl mx-auto">
+                    Google компаниясының жаңа өнімі. Интерактивті тапсырмалар, веб-қосымшалар және интеллектуалдық ойындар жасайтын қуатты құрал.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left text-xl-lg">
+                <div class="cyber-card p-6 flex items-center gap-6 hover:bg-blue-900/30 transition">
+                    <div class="bg-blue-600/20 p-4 rounded-full text-blue-400">
+                        <i data-lucide="layout-dashboard" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">Canvas Режимі</h3>
+                        <p class="text-gray-400">Код пен нәтижені қатар көруге, бірден түзетуге мүмкіндік беретін жұмыс алаңы.</p>
+                    </div>
+                </div>
+                <div class="cyber-card p-6 flex items-center gap-6 hover:bg-pink-900/30 transition">
+                    <div class="bg-pink-600/20 p-4 rounded-full text-pink-400">
+                        <i data-lucide="gamepad-2" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">Геймификация</h3>
+                        <p class="text-gray-400">Күрделі код жазбай-ақ, дайын ойын шаблондарын құру мүмкіндігі.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Prompts 1 & 2 (Literature) -->
+    <div class="slide w-full h-full flex-col justify-center items-center p-4 md:p-12" id="slide-5">
+        <div class="max-w-7xl w-full h-full flex flex-col z-20">
+            <div class="flex items-center justify-between mb-6 border-b border-gray-700 pb-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#00f3ff] uppercase flex items-center gap-3">
+                    <i data-lucide="book-open" class="w-8 h-8"></i>
+                    Абайдың 7-қара сөзі: <span class="text-white">Ойын & Тест Промттары</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full overflow-y-auto pb-10">
+                <!-- Prompt 1 (UPDATED with new design constraint) -->
+                <div class="cyber-card flex flex-col h-full">
+                    <div class="p-4 border-b border-gray-700 bg-cyan-900/20 flex justify-between items-center">
+                        <h3 class="text-cyan-400 font-bold text-lg tracking-wider">ТАПСЫРМА №1: ХРОНОЛОГИЯЛЫҚ ОЙЫН</h3>
+                        <button onclick="copyText('prompt1')" class="text-xs uppercase tracking-widest bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-black px-4 py-1 border border-cyan-500 transition font-bold">Көшіру</button>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <p id="prompt1" class="text-gray-300 font-mono text-sm md:text-base leading-relaxed whitespace-pre-line">
+"Маған Абайдың жетінші қара сөзіне негізделген хронологиялық тізбек ойынын жасап бер.
+
+**Тақырыбы:** Жетінші қара сөз (Жас баланың табиғаты).
+
+**Функционал:**
+1. Мәтін мағыналық блоктарға бөлініп, экранда аралас орналасқан.
+2. Оқушы блоктарды дұрыс ретімен басуы керек (логикалық тізбек).
+3. Дұрыс басқанда жасыл түс жанып, 'сәтті' дыбыс шықсын.
+4. Қате басқанда қызыл түс жанып, 'қате' дыбыс (buzzer) шықсын.
+
+**Дизайн & Жалғасуы:**
+- Дизайн: Киберпанк стилі. Фон: Қара-көк градиент, анимацияланған неон торлар.
+- **МАҢЫЗДЫ:** Дұрыс блоктарды басқан сайын, олардың арасындағы байланыс сызықтары (анимацияланған сызықтар немесе неон арналар) арқылы біріне-бірі **жалғасып үндесіп отыруы** керек.
+- Батырмалар: Неон жиекті, басқанда жарқырайтын эффект.
+- Қаріп: Футуристік (үлкен, оқуға жеңіл).
+Барлық код (HTML, CSS, JS) бір файлда болсын."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Prompt 2 (UNCHANGED) -->
+                <div class="cyber-card flex flex-col h-full">
+                    <div class="p-4 border-b border-gray-700 bg-pink-900/20 flex justify-between items-center">
+                        <h3 class="text-pink-400 font-bold text-lg tracking-wider">ТАПСЫРМА №2: АРАЛАС ТЕСТ</h3>
+                        <button onclick="copyText('prompt2')" class="text-xs uppercase tracking-widest bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-black px-4 py-1 border border-pink-500 transition font-bold">Көшіру</button>
+                    </div>
+                    <div class="p-6 flex-grow">
+                         <p id="prompt2" class="text-gray-300 font-mono text-sm md:text-base leading-relaxed whitespace-pre-line">
+"Абайдың 7-қара сөзі бойынша 14 сұрақтан тұратын интерактивті тест жаса.
+
+**Сұрақ түрлері:**
+1. Позиция ауыстыру (сөйлемдерді ретімен қою).
+2. Сәйкестендіру (Термин - Анықтама).
+3. Көп жауапты таңдау.
+4. Ақиқат/Жалған.
+5. Ашық сұрақ (текстік өріс).
+
+**Ерекшеліктер:**
+- Әр сұрақ жеке 'картада' шықсын.
+- Соңында жалпы ұпай және қатемен жұмыс көрсетілсін.
+- Дизайн: Киберпанк стилі. Неон түстер (күлгін, көк).
+- Фонда 'Matrix' стиліндегі әріптер жауып тұрсын.
+- Қаріп: Үлкен, оқуға жеңіл болсын."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Prompt 3 (Web App) - UPDATED with new level focus and answer button -->
+    <div class="slide w-full h-full flex-col justify-center items-center p-4 md:p-12" id="slide-6">
+        <div class="max-w-7xl w-full h-full flex flex-col justify-center z-20">
+            <div class="cyber-card flex flex-col w-full h-auto border-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+                <div class="p-4 border-b border-gray-700 bg-yellow-900/20 flex justify-between items-center">
+                    <h3 class="text-yellow-400 font-bold text-xl tracking-wider flex items-center gap-2">
+                        <i data-lucide="laptop-2" class="w-6 h-6"></i>
+                        ТАПСЫРМА №3: Web-App (<span class="text-white">Талдау және Шешім</span>)
+                    </h3>
+                    <button onclick="copyText('prompt3')" class="text-sm uppercase tracking-widest bg-yellow-500/20 hover:bg-yellow-500 text-yellow-300 hover:text-black px-4 py-2 border border-yellow-500 transition font-bold">Көшіру</button>
+                </div>
+                <div class="p-8">
+                    <p id="prompt3" class="text-gray-300 font-mono text-base md:text-lg leading-relaxed whitespace-pre-line">
+"3-деңгейлі күрделі жазбаша тапсырма беретін веб-қосымша (Single Page App) жаса.
+
+**Мазмұны:** Абайдың 7-қара сөзі.
+
+**Деңгейлер және Фокус:**
+1. **Жеңіл (L1) - Түсінік:** Мәтіннен кілт сөздерді теру.
+2. **Орташа (L2) - Цитата Талдау:** Қара сөзден бір нақты цитатаны (мысалы, 'ақыл, қайрат, жүрек') таңдап, оның қазіргі өмірдегі мағынасына қысқаша талдау (Interpretation) жазу.
+3. **Күрделі (L3) - Шешім Ұсыну:** Абайдың басты идеяларын (мысалы, толық адам) қолдана отырып, қазіргі заманның бір мәселесіне (мысалы, әлеуметтік желілердегі сын) шешім ұсыну (Problem-Solution Analysis).
+
+**Функционал:**
+- Әр деңгейдің нақты бағалау критерийі экранда тұрсын.
+- 'Тексеру' батырмасын басқанда ЖИ симуляциясы (қарапайым JS логикасы) арқылы кері байланыс және болжамды ұпай берілсін.
+- **ЖАҢА ШАРТ:** Әр деңгей үшін 'Болжамды Жауапты Көрсету' батырмасы және үлгі жауабы шығатын бөлім қосылсын.
+
+**Стиль:**
+- 'Ретро-Футуризм': Тарихи пергамент фактурасы мен Киберпанк интерфейсінің (голограмма, неон) қоспасы.
+- Қаріп: Үлкен және кең форматқа бейімделген болсын.
+- Экранның шеттерінде голографиялық ұлттық ою-өрнектер болсын."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for icons to load
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+        
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        function showSlide(n) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            const slide = document.getElementById(`slide-${n}`);
+            if (slide) {
+                slide.classList.add('active');
+                // Update text indicator with zero padding
+                document.getElementById('slideIndicator').innerText = `0${n} / 0${totalSlides}`;
+                
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                
+                prevBtn.style.opacity = n === 1 ? "0.5" : "1";
+                prevBtn.style.pointerEvents = n === 1 ? "none" : "auto";
+                
+                nextBtn.style.opacity = n === totalSlides ? "0.5" : "1";
+                nextBtn.style.pointerEvents = n === totalSlides ? "none" : "auto";
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        function copyText(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                // Use the innerText for copying prompt content
+                const text = element.innerText; 
+                
+                // Fallback method: create a temporary textarea
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                
+                // Make it invisible but part of the DOM
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        const btn = element.parentElement.querySelector('button');
+                        if (btn) {
+                            const originalText = btn.innerText;
+                            btn.innerText = "КӨШІРІЛДІ!";
+                            btn.style.backgroundColor = "var(--neon-pink)";
+                            btn.style.color = "black";
+                            
+                            setTimeout(() => {
+                                btn.innerText = originalText;
+                                btn.style.backgroundColor = "";
+                                btn.style.color = "";
+                            }, 2000);
+                        }
+                    } else {
+                        console.error("Көшіру сәтсіз аяқталды.");
+                    }
+                } catch (err) {
+                    console.error("Көшіру кезінде қате шықты: ", err);
+                }
+                
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Initialize
+        showSlide(1);
+    </script>
+</body>
+</html>
